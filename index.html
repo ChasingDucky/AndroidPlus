@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AndroidPlus - Universal Android Web Flasher</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 AndroidPlus</h1>
+            <p class="subtitle">Universal Android Web Flasher</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Connection Section -->
+            <section class="card" id="connection-section">
+                <h2>Device Connection</h2>
+                <div class="connection-status">
+                    <div class="status-indicator" id="status-indicator"></div>
+                    <span id="connection-status">Not Connected</span>
+                </div>
+                <button id="connect-btn" class="btn btn-primary">Connect Device</button>
+                <button id="disconnect-btn" class="btn btn-secondary" style="display: none;">Disconnect</button>
+
+                <div id="device-info" class="device-info" style="display: none;">
+                    <h3>Device Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Model:</label>
+                            <span id="device-model">-</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Manufacturer:</label>
+                            <span id="device-manufacturer">-</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Android Version:</label>
+                            <span id="device-android">-</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Serial Number:</label>
+                            <span id="device-serial">-</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Build Number:</label>
+                            <span id="device-build">-</span>
+                        </div>
+                        <div class="info-item">
+                            <label>SDK Version:</label>
+                            <span id="device-sdk">-</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Operations Section -->
+            <section class="card" id="operations-section" style="display: none;">
+                <h2>Device Operations</h2>
+
+                <div class="operation-tabs">
+                    <button class="tab-btn active" data-tab="fastboot">Fastboot</button>
+                    <button class="tab-btn" data-tab="adb">ADB Commands</button>
+                    <button class="tab-btn" data-tab="tools">Tools</button>
+                </div>
+
+                <!-- Fastboot Tab -->
+                <div id="fastboot-tab" class="tab-content active">
+                    <h3>Fastboot Operations</h3>
+                    <div class="operation-group">
+                        <label for="partition-select">Select Partition:</label>
+                        <select id="partition-select" class="input-field">
+                            <option value="boot">Boot</option>
+                            <option value="system">System</option>
+                            <option value="vendor">Vendor</option>
+                            <option value="recovery">Recovery</option>
+                            <option value="vbmeta">VBMeta</option>
+                            <option value="dtbo">DTBO</option>
+                            <option value="userdata">Userdata</option>
+                        </select>
+
+                        <label for="image-file">Select Image File:</label>
+                        <input type="file" id="image-file" class="file-input" accept=".img">
+
+                        <button id="flash-btn" class="btn btn-primary" disabled>Flash Image</button>
+                    </div>
+
+                    <div class="operation-group">
+                        <h4>Quick Actions</h4>
+                        <button id="reboot-bootloader-btn" class="btn btn-secondary">Reboot to Bootloader</button>
+                        <button id="reboot-recovery-btn" class="btn btn-secondary">Reboot to Recovery</button>
+                        <button id="reboot-btn" class="btn btn-secondary">Reboot System</button>
+                    </div>
+
+                    <div class="operation-group">
+                        <h4>Advanced Operations</h4>
+                        <button id="unlock-bootloader-btn" class="btn btn-warning">Unlock Bootloader</button>
+                        <button id="lock-bootloader-btn" class="btn btn-warning">Lock Bootloader</button>
+                        <button id="erase-partition-btn" class="btn btn-danger">Erase Partition</button>
+                    </div>
+                </div>
+
+                <!-- ADB Tab -->
+                <div id="adb-tab" class="tab-content">
+                    <h3>ADB Commands</h3>
+                    <div class="operation-group">
+                        <label for="adb-command">Enter ADB Command:</label>
+                        <input type="text" id="adb-command" class="input-field" placeholder="e.g., shell getprop ro.build.version.release">
+                        <button id="execute-adb-btn" class="btn btn-primary">Execute</button>
+                    </div>
+
+                    <div class="operation-group">
+                        <h4>Common Commands</h4>
+                        <button class="btn btn-secondary quick-cmd" data-cmd="shell getprop">Get Properties</button>
+                        <button class="btn btn-secondary quick-cmd" data-cmd="shell pm list packages">List Packages</button>
+                        <button class="btn btn-secondary quick-cmd" data-cmd="shell dumpsys battery">Battery Info</button>
+                        <button class="btn btn-secondary quick-cmd" data-cmd="shell wm size">Screen Size</button>
+                    </div>
+                </div>
+
+                <!-- Tools Tab -->
+                <div id="tools-tab" class="tab-content">
+                    <h3>Utilities</h3>
+                    <div class="operation-group">
+                        <h4>File Operations</h4>
+                        <label for="push-file">Push File to Device:</label>
+                        <input type="file" id="push-file" class="file-input">
+                        <input type="text" id="push-path" class="input-field" placeholder="Destination path (e.g., /sdcard/Download/)">
+                        <button id="push-file-btn" class="btn btn-primary">Push File</button>
+                    </div>
+
+                    <div class="operation-group">
+                        <h4>Screenshots & Screen Recording</h4>
+                        <button id="screenshot-btn" class="btn btn-secondary">Take Screenshot</button>
+                        <button id="screenrecord-btn" class="btn btn-secondary">Start Recording</button>
+                        <button id="stop-record-btn" class="btn btn-secondary" disabled>Stop Recording</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Progress Section -->
+            <section class="card" id="progress-section" style="display: none;">
+                <h2>Operation Progress</h2>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill"></div>
+                    </div>
+                    <div id="progress-text" class="progress-text">0%</div>
+                </div>
+                <div id="operation-status" class="operation-status"></div>
+            </section>
+
+            <!-- Console Section -->
+            <section class="card">
+                <h2>Console Output</h2>
+                <div class="console-header">
+                    <button id="clear-console-btn" class="btn btn-small">Clear</button>
+                    <button id="download-log-btn" class="btn btn-small">Download Log</button>
+                </div>
+                <div id="console" class="console"></div>
+            </section>
+        </div>
+
+        <footer>
+            <div class="warning">
+                ⚠️ Warning: Flashing your device may void your warranty and can brick your device if done incorrectly. Always backup your data first.
+            </div>
+            <div class="credits">
+                AndroidPlus - Universal Android Web Flasher |
+                <a href="https://github.com" target="_blank">GitHub</a>
+            </div>
+        </footer>
+    </div>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>

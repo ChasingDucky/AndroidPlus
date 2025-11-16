@@ -1,23 +1,28 @@
-// AndroidPlus - Universal Android Web Flasher
-// Main Application Logic
+// AndroidPlus - Improved Main Application
+// Enhanced with better protocol detection and error handling
 
 class AndroidFlasher {
     constructor() {
         this.device = null;
-        this.connection = null;
         this.interfaceNumber = null;
         this.endpointIn = null;
         this.endpointOut = null;
         this.isConnected = false;
+        this.deviceMode = null; // 'adb' or 'fastboot'
         this.logs = [];
+
+        // ADB Protocol instance (if available)
+        this.adbProtocol = null;
+        this.fastbootProtocol = null;
+
         this.initializeUI();
     }
 
     // Initialize UI event listeners
     initializeUI() {
         // Connection buttons
-        document.getElementById('connect-btn').addEventListener('click', () => this.connectDevice());
-        document.getElementById('disconnect-btn').addEventListener('click', () => this.disconnectDevice());
+        document.getElementById('connect-btn')?.addEventListener('click', () => this.connectDevice());
+        document.getElementById('disconnect-btn')?.addEventListener('click', () => this.disconnectDevice());
 
         // Tab switching
         document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -25,38 +30,48 @@ class AndroidFlasher {
         });
 
         // Fastboot operations
-        document.getElementById('image-file').addEventListener('change', (e) => {
-            document.getElementById('flash-btn').disabled = !e.target.files.length;
+        document.getElementById('image-file')?.addEventListener('change', (e) => {
+            const flashBtn = document.getElementById('flash-btn');
+            if (flashBtn) flashBtn.disabled = !e.target.files.length;
         });
-        document.getElementById('flash-btn').addEventListener('click', () => this.flashImage());
-        document.getElementById('reboot-bootloader-btn').addEventListener('click', () => this.rebootToBootloader());
-        document.getElementById('reboot-recovery-btn').addEventListener('click', () => this.rebootToRecovery());
-        document.getElementById('reboot-btn').addEventListener('click', () => this.rebootSystem());
-        document.getElementById('unlock-bootloader-btn').addEventListener('click', () => this.unlockBootloader());
-        document.getElementById('lock-bootloader-btn').addEventListener('click', () => this.lockBootloader());
-        document.getElementById('erase-partition-btn').addEventListener('click', () => this.erasePartition());
+
+        document.getElementById('flash-btn')?.addEventListener('click', () => this.flashImage());
+        document.getElementById('reboot-bootloader-btn')?.addEventListener('click', () => this.rebootToBootloader());
+        document.getElementById('reboot-recovery-btn')?.addEventListener('click', () => this.rebootToRecovery());
+        document.getElementById('reboot-btn')?.addEventListener('click', () => this.rebootSystem());
+        document.getElementById('unlock-bootloader-btn')?.addEventListener('click', () => this.unlockBootloader());
+        document.getElementById('lock-bootloader-btn')?.addEventListener('click', () => this.lockBootloader());
+        document.getElementById('erase-partition-btn')?.addEventListener('click', () => this.erasePartition());
 
         // ADB operations
-        document.getElementById('execute-adb-btn').addEventListener('click', () => this.executeADBCommand());
-        document.getElementById('adb-command').addEventListener('keypress', (e) => {
+        document.getElementById('execute-adb-btn')?.addEventListener('click', () => this.executeADBCommand());
+        document.getElementById('adb-command')?.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') this.executeADBCommand();
         });
         document.querySelectorAll('.quick-cmd').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                document.getElementById('adb-command').value = e.target.dataset.cmd;
-                this.executeADBCommand();
+                const cmdInput = document.getElementById('adb-command');
+                if (cmdInput) {
+                    cmdInput.value = e.target.dataset.cmd;
+                    this.executeADBCommand();
+                }
             });
         });
 
         // Tools operations
-        document.getElementById('push-file-btn').addEventListener('click', () => this.pushFile());
-        document.getElementById('screenshot-btn').addEventListener('click', () => this.takeScreenshot());
-        document.getElementById('screenrecord-btn').addEventListener('click', () => this.startRecording());
-        document.getElementById('stop-record-btn').addEventListener('click', () => this.stopRecording());
+        document.getElementById('push-file-btn')?.addEventListener('click', () => this.pushFile());
+        document.getElementById('screenshot-btn')?.addEventListener('click', () => this.takeScreenshot());
+        document.getElementById('screenrecord-btn')?.addEventListener('click', () => this.startRecording());
+        document.getElementById('stop-record-btn')?.addEventListener('click', () => this.stopRecording());
+
+        // System info buttons
+        document.getElementById('battery-info-btn')?.addEventListener('click', () => this.showBatteryInfo());
+        document.getElementById('memory-info-btn')?.addEventListener('click', () => this.showMemoryInfo());
+        document.getElementById('cpu-info-btn')?.addEventListener('click', () => this.showCPUInfo());
 
         // Console operations
-        document.getElementById('clear-console-btn').addEventListener('click', () => this.clearConsole());
-        document.getElementById('download-log-btn').addEventListener('click', () => this.downloadLog());
+        document.getElementById('clear-console-btn')?.addEventListener('click', () => this.clearConsole());
+        document.getElementById('download-log-btn')?.addEventListener('click', () => this.downloadLog());
     }
 
     // Switch between operation tabs
@@ -65,7 +80,23 @@ class AndroidFlasher {
         document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
 
         event.target.classList.add('active');
-        document.getElementById(`${tabName}-tab`).classList.add('active');
+        const tabContent = document.getElementById(`${tabName}-tab`);
+        if (tabContent) tabContent.classList.add('active');
+    }
+
+    // Detect device mode (ADB or Fastboot)
+    detectDeviceMode(interfaces) {
+        for (const iface of interfaces) {
+            const alternate = iface.alternates[0];
+            if (alternate.interfaceClass === 0xFF && alternate.interfaceSubclass === 0x42) {
+                if (alternate.interfaceProtocol === 0x01) {
+                    return 'adb';
+                } else if (alternate.interfaceProtocol === 0x03) {
+                    return 'fastboot';
+                }
+            }
+        }
+        return null;
     }
 
     // Connect to Android device via WebUSB
@@ -96,6 +127,10 @@ class AndroidFlasher {
             const interfaces = this.device.configuration.interfaces;
             this.log(`Found ${interfaces.length} interface(s)`, 'info');
 
+            // Detect device mode
+            this.deviceMode = this.detectDeviceMode(interfaces);
+            this.log(`Device mode detected: ${this.deviceMode || 'unknown'}`, 'info');
+
             for (const iface of interfaces) {
                 const alternate = iface.alternates[0];
                 // Look for ADB or Fastboot interface
@@ -123,6 +158,22 @@ class AndroidFlasher {
                 throw new Error('Could not find ADB/Fastboot endpoints');
             }
 
+            this.log(`Endpoints found - In: ${this.endpointIn}, Out: ${this.endpointOut}`, 'info');
+
+            // Initialize protocol handlers if modules are loaded
+            if (this.deviceMode === 'fastboot' && typeof FastbootProtocol !== 'undefined') {
+                this.fastbootProtocol = new FastbootProtocol(this.device, this.endpointIn, this.endpointOut);
+                this.log('Fastboot protocol initialized', 'success');
+            } else if (this.deviceMode === 'adb' && typeof ADBProtocol !== 'undefined') {
+                this.adbProtocol = new ADBProtocol(this.device, this.endpointIn, this.endpointOut);
+                this.log('ADB protocol initialized', 'success');
+
+                // Note: Full ADB protocol requires authentication
+                this.log('⚠️ Note: ADB mode detected. Full protocol support coming soon.', 'warning');
+                this.log('For now, please use Fastboot mode for flashing operations.', 'info');
+                this.log('To enter Fastboot: Power off device, then hold Power + Volume Down', 'info');
+            }
+
             this.isConnected = true;
             this.updateConnectionStatus(true);
             await this.getDeviceInfo();
@@ -146,6 +197,9 @@ class AndroidFlasher {
             this.endpointIn = null;
             this.endpointOut = null;
             this.isConnected = false;
+            this.deviceMode = null;
+            this.adbProtocol = null;
+            this.fastbootProtocol = null;
 
             this.updateConnectionStatus(false);
             this.log('Disconnected from device', 'info');
@@ -164,19 +218,21 @@ class AndroidFlasher {
         const operationsSection = document.getElementById('operations-section');
 
         if (connected) {
-            statusIndicator.classList.add('connected');
-            statusText.textContent = 'Connected';
-            connectBtn.style.display = 'none';
-            disconnectBtn.style.display = 'inline-block';
-            deviceInfo.style.display = 'block';
-            operationsSection.style.display = 'block';
+            if (statusIndicator) statusIndicator.classList.add('connected');
+            if (statusText) {
+                statusText.textContent = `Connected (${this.deviceMode || 'unknown'} mode)`;
+            }
+            if (connectBtn) connectBtn.style.display = 'none';
+            if (disconnectBtn) disconnectBtn.style.display = 'inline-block';
+            if (deviceInfo) deviceInfo.style.display = 'block';
+            if (operationsSection) operationsSection.style.display = 'block';
         } else {
-            statusIndicator.classList.remove('connected');
-            statusText.textContent = 'Not Connected';
-            connectBtn.style.display = 'inline-block';
-            disconnectBtn.style.display = 'none';
-            deviceInfo.style.display = 'none';
-            operationsSection.style.display = 'none';
+            if (statusIndicator) statusIndicator.classList.remove('connected');
+            if (statusText) statusText.textContent = 'Not Connected';
+            if (connectBtn) connectBtn.style.display = 'inline-block';
+            if (disconnectBtn) disconnectBtn.style.display = 'none';
+            if (deviceInfo) deviceInfo.style.display = 'none';
+            if (operationsSection) operationsSection.style.display = 'none';
         }
     }
 
@@ -185,15 +241,32 @@ class AndroidFlasher {
         try {
             this.log('Retrieving device information...', 'info');
 
-            // Execute ADB commands to get device properties
             const properties = {
-                'device-model': await this.executeShellCommand('getprop ro.product.model'),
-                'device-manufacturer': await this.executeShellCommand('getprop ro.product.manufacturer'),
-                'device-android': await this.executeShellCommand('getprop ro.build.version.release'),
+                'device-model': this.device.productName || 'Unknown',
+                'device-manufacturer': this.device.manufacturerName || 'Unknown',
                 'device-serial': this.device.serialNumber || 'N/A',
-                'device-build': await this.executeShellCommand('getprop ro.build.display.id'),
-                'device-sdk': await this.executeShellCommand('getprop ro.build.version.sdk')
             };
+
+            // Try to get more info based on mode
+            if (this.deviceMode === 'fastboot' && this.fastbootProtocol) {
+                try {
+                    const product = await this.fastbootProtocol.getvar('product');
+                    const variant = await this.fastbootProtocol.getvar('variant');
+                    const version = await this.fastbootProtocol.getvar('version-bootloader');
+
+                    properties['device-model'] = product || properties['device-model'];
+                    properties['device-android'] = 'Bootloader Mode';
+                    properties['device-build'] = version || 'N/A';
+                    properties['device-sdk'] = variant || 'N/A';
+                } catch (e) {
+                    this.log('Could not retrieve all fastboot variables', 'warning');
+                }
+            } else {
+                // In ADB mode, we can't easily get properties without authentication
+                properties['device-android'] = 'ADB Mode (Auth Required)';
+                properties['device-build'] = 'Connect via Fastboot for details';
+                properties['device-sdk'] = 'N/A';
+            }
 
             // Update UI with device info
             for (const [id, value] of Object.entries(properties)) {
@@ -209,51 +282,43 @@ class AndroidFlasher {
         }
     }
 
-    // Execute ADB shell command
-    async executeShellCommand(command) {
-        try {
-            // This is a simplified implementation
-            // In a real implementation, you would use proper ADB protocol
-            const fullCommand = `shell:${command}`;
-            const result = await this.sendADBCommand(fullCommand);
-            return result.trim();
-        } catch (error) {
-            this.log(`Shell command error: ${error.message}`, 'error');
-            return 'Error';
+    // Execute ADB command (requires authentication - not fully implemented)
+    async executeADBCommand() {
+        const cmdInput = document.getElementById('adb-command');
+        if (!cmdInput) return;
+
+        const command = cmdInput.value.trim();
+
+        if (!command) {
+            this.log('Please enter a command', 'error');
+            return;
         }
+
+        if (this.deviceMode !== 'adb') {
+            this.log('Device must be in ADB mode for this operation', 'error');
+            this.log('Current mode: ' + (this.deviceMode || 'unknown'), 'info');
+            return;
+        }
+
+        this.log('⚠️ ADB command execution requires authentication', 'warning');
+        this.log('Full ADB protocol support is in development', 'info');
+        this.log('Please use adb command line tool for now, or reboot to fastboot mode', 'info');
     }
 
-    // Send ADB command to device
-    async sendADBCommand(command) {
-        try {
-            // Prepare ADB message
-            const encoder = new TextEncoder();
-            const commandBytes = encoder.encode(command);
-
-            // ADB protocol: 4 bytes length (hex) + command
-            const lengthHex = commandBytes.length.toString(16).padStart(4, '0');
-            const message = encoder.encode(lengthHex + command);
-
-            // Send command
-            await this.device.transferOut(this.endpointOut, message);
-
-            // Receive response
-            const result = await this.device.transferIn(this.endpointIn, 4096);
-            const decoder = new TextDecoder();
-            return decoder.decode(result.data);
-        } catch (error) {
-            throw new Error(`ADB communication failed: ${error.message}`);
-        }
-    }
-
-    // Flash image to partition
+    // Fastboot: Flash image to partition
     async flashImage() {
-        const partition = document.getElementById('partition-select').value;
+        const partition = document.getElementById('partition-select')?.value;
         const fileInput = document.getElementById('image-file');
-        const file = fileInput.files[0];
+        const file = fileInput?.files[0];
 
         if (!file) {
             this.log('Please select an image file', 'error');
+            return;
+        }
+
+        if (this.deviceMode !== 'fastboot') {
+            this.log('Device must be in Fastboot mode for flashing', 'error');
+            this.log('Please reboot to bootloader first', 'info');
             return;
         }
 
@@ -266,23 +331,40 @@ class AndroidFlasher {
             this.showProgress(true);
 
             const reader = new FileReader();
+
             reader.onprogress = (e) => {
                 if (e.lengthComputable) {
-                    const progress = (e.loaded / e.total) * 100;
-                    this.updateProgress(progress, `Flashing ${partition}: ${Math.round(progress)}%`);
+                    const progress = (e.loaded / e.total) * 50; // First 50% is reading
+                    this.updateProgress(progress, `Reading file: ${Math.round(progress)}%`);
                 }
             };
 
             reader.onload = async (e) => {
-                const imageData = e.target.result;
+                const imageData = new Uint8Array(e.target.result);
+                this.log(`File loaded: ${imageData.length} bytes`, 'info');
 
-                // Send fastboot flash command
-                await this.sendFastbootCommand(`flash:${partition}`, new Uint8Array(imageData));
+                try {
+                    if (this.fastbootProtocol) {
+                        await this.fastbootProtocol.flash(partition, imageData, (progress) => {
+                            this.updateProgress(50 + progress / 2, `Flashing ${partition}: ${Math.round(progress)}%`);
+                        });
+                    } else {
+                        throw new Error('Fastboot protocol not initialized');
+                    }
 
-                this.log(`Successfully flashed ${file.name} to ${partition}`, 'success');
-                this.updateProgress(100, 'Flash complete!');
+                    this.log(`Successfully flashed ${file.name} to ${partition}`, 'success');
+                    this.updateProgress(100, 'Flash complete!');
 
-                setTimeout(() => this.showProgress(false), 2000);
+                    setTimeout(() => this.showProgress(false), 2000);
+                } catch (error) {
+                    this.log(`Flash error: ${error.message}`, 'error');
+                    this.showProgress(false);
+                }
+            };
+
+            reader.onerror = (e) => {
+                this.log('File read error', 'error');
+                this.showProgress(false);
             };
 
             reader.readAsArrayBuffer(file);
@@ -294,35 +376,15 @@ class AndroidFlasher {
 
     // Send Fastboot command
     async sendFastbootCommand(command, data = null) {
-        try {
-            const encoder = new TextEncoder();
-            const commandBytes = encoder.encode(command);
-
-            // Send command
-            await this.device.transferOut(this.endpointOut, commandBytes);
-
-            // If data provided, send it in chunks
-            if (data) {
-                const chunkSize = 4096;
-                for (let i = 0; i < data.length; i += chunkSize) {
-                    const chunk = data.slice(i, Math.min(i + chunkSize, data.length));
-                    await this.device.transferOut(this.endpointOut, chunk);
-                }
-            }
-
-            // Receive response
-            const result = await this.device.transferIn(this.endpointIn, 64);
-            const decoder = new TextDecoder();
-            const response = decoder.decode(result.data);
-
-            if (response.startsWith('FAIL')) {
-                throw new Error(response.substring(4));
-            }
-
-            return response;
-        } catch (error) {
-            throw new Error(`Fastboot command failed: ${error.message}`);
+        if (this.deviceMode !== 'fastboot') {
+            throw new Error('Device must be in Fastboot mode');
         }
+
+        if (!this.fastbootProtocol) {
+            throw new Error('Fastboot protocol not initialized');
+        }
+
+        return await this.fastbootProtocol.sendCommand(command);
     }
 
     // Reboot to bootloader
@@ -331,10 +393,16 @@ class AndroidFlasher {
 
         try {
             this.log('Rebooting to bootloader...', 'info');
-            await this.executeShellCommand('reboot bootloader');
-            this.log('Device is rebooting to bootloader', 'success');
 
-            // Disconnect as device will reconnect in bootloader mode
+            if (this.deviceMode === 'adb') {
+                this.log('ADB reboot requires authentication - not yet supported', 'error');
+                this.log('Please use: adb reboot bootloader', 'info');
+                return;
+            } else if (this.deviceMode === 'fastboot' && this.fastbootProtocol) {
+                await this.fastbootProtocol.reboot('bootloader');
+                this.log('Device is rebooting to bootloader', 'success');
+            }
+
             setTimeout(() => this.disconnectDevice(), 1000);
         } catch (error) {
             this.log(`Reboot error: ${error.message}`, 'error');
@@ -347,8 +415,13 @@ class AndroidFlasher {
 
         try {
             this.log('Rebooting to recovery...', 'info');
-            await this.executeShellCommand('reboot recovery');
-            this.log('Device is rebooting to recovery', 'success');
+
+            if (this.deviceMode === 'fastboot' && this.fastbootProtocol) {
+                await this.fastbootProtocol.sendCommand('oem reboot-recovery');
+                this.log('Device is rebooting to recovery', 'success');
+            } else {
+                this.log('Recovery reboot requires Fastboot mode or ADB with authentication', 'error');
+            }
 
             setTimeout(() => this.disconnectDevice(), 1000);
         } catch (error) {
@@ -362,8 +435,13 @@ class AndroidFlasher {
 
         try {
             this.log('Rebooting device...', 'info');
-            await this.executeShellCommand('reboot');
-            this.log('Device is rebooting', 'success');
+
+            if (this.deviceMode === 'fastboot' && this.fastbootProtocol) {
+                await this.fastbootProtocol.reboot();
+                this.log('Device is rebooting', 'success');
+            } else {
+                this.log('Reboot requires Fastboot mode or ADB with authentication', 'error');
+            }
 
             setTimeout(() => this.disconnectDevice(), 1000);
         } catch (error) {
@@ -376,9 +454,17 @@ class AndroidFlasher {
         if (!confirm('WARNING: Unlocking bootloader will ERASE ALL DATA on your device! Continue?')) return;
 
         try {
+            if (this.deviceMode !== 'fastboot') {
+                this.log('Device must be in Fastboot mode to unlock bootloader', 'error');
+                return;
+            }
+
             this.log('Unlocking bootloader...', 'warning');
-            await this.sendFastbootCommand('flashing unlock');
-            this.log('Bootloader unlock command sent. Please confirm on device.', 'success');
+
+            if (this.fastbootProtocol) {
+                await this.fastbootProtocol.unlock();
+                this.log('Bootloader unlock command sent. Please confirm on device.', 'success');
+            }
         } catch (error) {
             this.log(`Unlock error: ${error.message}`, 'error');
         }
@@ -389,9 +475,17 @@ class AndroidFlasher {
         if (!confirm('Lock bootloader? This may brick your device if you have custom software installed.')) return;
 
         try {
+            if (this.deviceMode !== 'fastboot') {
+                this.log('Device must be in Fastboot mode to lock bootloader', 'error');
+                return;
+            }
+
             this.log('Locking bootloader...', 'warning');
-            await this.sendFastbootCommand('flashing lock');
-            this.log('Bootloader lock command sent. Please confirm on device.', 'success');
+
+            if (this.fastbootProtocol) {
+                await this.fastbootProtocol.lock();
+                this.log('Bootloader lock command sent. Please confirm on device.', 'success');
+            }
         } catch (error) {
             this.log(`Lock error: ${error.message}`, 'error');
         }
@@ -399,120 +493,68 @@ class AndroidFlasher {
 
     // Erase partition
     async erasePartition() {
-        const partition = document.getElementById('partition-select').value;
+        const partition = document.getElementById('partition-select')?.value;
 
         if (!confirm(`DANGER: Erase ${partition} partition? This cannot be undone!`)) return;
 
         try {
+            if (this.deviceMode !== 'fastboot') {
+                this.log('Device must be in Fastboot mode to erase partitions', 'error');
+                return;
+            }
+
             this.log(`Erasing ${partition} partition...`, 'warning');
-            await this.sendFastbootCommand(`erase:${partition}`);
-            this.log(`${partition} partition erased successfully`, 'success');
+
+            if (this.fastbootProtocol) {
+                await this.fastbootProtocol.erase(partition);
+                this.log(`${partition} partition erased successfully`, 'success');
+            }
         } catch (error) {
             this.log(`Erase error: ${error.message}`, 'error');
         }
     }
 
-    // Execute custom ADB command
-    async executeADBCommand() {
-        const command = document.getElementById('adb-command').value.trim();
-
-        if (!command) {
-            this.log('Please enter a command', 'error');
-            return;
-        }
-
-        try {
-            this.log(`Executing: ${command}`, 'info');
-            const result = await this.executeShellCommand(command);
-            this.log(`Result:\n${result}`, 'success');
-        } catch (error) {
-            this.log(`Command error: ${error.message}`, 'error');
-        }
-    }
-
-    // Push file to device
+    // Placeholder methods for features requiring ADB authentication
     async pushFile() {
-        const fileInput = document.getElementById('push-file');
-        const destPath = document.getElementById('push-path').value.trim();
-        const file = fileInput.files[0];
-
-        if (!file || !destPath) {
-            this.log('Please select a file and enter destination path', 'error');
-            return;
-        }
-
-        try {
-            this.log(`Pushing ${file.name} to ${destPath}...`, 'info');
-            this.showProgress(true);
-
-            // Read file and push to device
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                const fileData = new Uint8Array(e.target.result);
-                // Simplified - real implementation would use ADB sync protocol
-                this.log(`File ${file.name} pushed successfully`, 'success');
-                this.showProgress(false);
-            };
-            reader.readAsArrayBuffer(file);
-        } catch (error) {
-            this.log(`Push error: ${error.message}`, 'error');
-            this.showProgress(false);
-        }
+        this.log('File push requires ADB authentication - not yet implemented', 'warning');
+        this.log('Please use: adb push <local> <remote>', 'info');
     }
 
-    // Take screenshot
     async takeScreenshot() {
-        try {
-            this.log('Taking screenshot...', 'info');
-
-            // Execute screencap command
-            await this.executeShellCommand('screencap -p /sdcard/screenshot.png');
-            this.log('Screenshot saved to /sdcard/screenshot.png', 'success');
-
-            // TODO: Pull the screenshot file from device
-            this.log('Note: Screenshot is saved on device. Use ADB pull to download it.', 'info');
-        } catch (error) {
-            this.log(`Screenshot error: ${error.message}`, 'error');
-        }
+        this.log('Screenshot requires ADB authentication - not yet implemented', 'warning');
+        this.log('Please use: adb shell screencap /sdcard/screenshot.png', 'info');
     }
 
-    // Start screen recording
     async startRecording() {
-        try {
-            this.log('Starting screen recording...', 'info');
-
-            document.getElementById('screenrecord-btn').disabled = true;
-            document.getElementById('stop-record-btn').disabled = false;
-
-            // Execute screenrecord command
-            await this.executeShellCommand('screenrecord /sdcard/recording.mp4 &');
-            this.log('Recording started. Press Stop Recording when done.', 'success');
-        } catch (error) {
-            this.log(`Recording error: ${error.message}`, 'error');
-        }
+        this.log('Screen recording requires ADB authentication - not yet implemented', 'warning');
+        this.log('Please use: adb shell screenrecord /sdcard/video.mp4', 'info');
     }
 
-    // Stop screen recording
     async stopRecording() {
-        try {
-            this.log('Stopping screen recording...', 'info');
+        this.log('Please stop recording manually on device or via adb', 'info');
+    }
 
-            // Kill screenrecord process
-            await this.executeShellCommand('pkill -SIGINT screenrecord');
+    async showBatteryInfo() {
+        this.log('Battery info requires ADB authentication - not yet implemented', 'warning');
+        this.log('Please use: adb shell dumpsys battery', 'info');
+    }
 
-            document.getElementById('screenrecord-btn').disabled = false;
-            document.getElementById('stop-record-btn').disabled = true;
+    async showMemoryInfo() {
+        this.log('Memory info requires ADB authentication - not yet implemented', 'warning');
+        this.log('Please use: adb shell cat /proc/meminfo', 'info');
+    }
 
-            this.log('Recording stopped and saved to /sdcard/recording.mp4', 'success');
-            this.log('Note: Recording is saved on device. Use ADB pull to download it.', 'info');
-        } catch (error) {
-            this.log(`Stop recording error: ${error.message}`, 'error');
-        }
+    async showCPUInfo() {
+        this.log('CPU info requires ADB authentication - not yet implemented', 'warning');
+        this.log('Please use: adb shell cat /proc/cpuinfo', 'info');
     }
 
     // Show/hide progress bar
     showProgress(show) {
-        document.getElementById('progress-section').style.display = show ? 'block' : 'none';
+        const progressSection = document.getElementById('progress-section');
+        if (progressSection) {
+            progressSection.style.display = show ? 'block' : 'none';
+        }
         if (!show) {
             this.updateProgress(0, '');
         }
@@ -520,22 +562,28 @@ class AndroidFlasher {
 
     // Update progress bar
     updateProgress(percent, message) {
-        document.getElementById('progress-fill').style.width = `${percent}%`;
-        document.getElementById('progress-text').textContent = `${Math.round(percent)}%`;
-        document.getElementById('operation-status').textContent = message;
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+        const operationStatus = document.getElementById('operation-status');
+
+        if (progressFill) progressFill.style.width = `${percent}%`;
+        if (progressText) progressText.textContent = `${Math.round(percent)}%`;
+        if (operationStatus) operationStatus.textContent = message;
     }
 
     // Log message to console
     log(message, type = 'info') {
-        const console = document.getElementById('console');
+        const consoleEl = document.getElementById('console');
+        if (!consoleEl) return;
+
         const timestamp = new Date().toLocaleTimeString();
 
         const entry = document.createElement('div');
         entry.className = `console-entry ${type}`;
         entry.innerHTML = `<span class="console-timestamp">[${timestamp}]</span> ${message}`;
 
-        console.appendChild(entry);
-        console.scrollTop = console.scrollHeight;
+        consoleEl.appendChild(entry);
+        consoleEl.scrollTop = consoleEl.scrollHeight;
 
         // Store in logs array
         this.logs.push({ timestamp, message, type });
@@ -543,7 +591,8 @@ class AndroidFlasher {
 
     // Clear console
     clearConsole() {
-        document.getElementById('console').innerHTML = '';
+        const consoleEl = document.getElementById('console');
+        if (consoleEl) consoleEl.innerHTML = '';
         this.logs = [];
         this.log('Console cleared', 'info');
     }
@@ -576,4 +625,7 @@ app.log('Click "Connect Device" to begin', 'info');
 // Check WebUSB support
 if (!navigator.usb) {
     app.log('ERROR: WebUSB is not supported in this browser. Please use Chrome, Edge, or Opera.', 'error');
+} else {
+    app.log('💡 Tip: For best results, connect your device in Fastboot mode', 'info');
+    app.log('To enter Fastboot: Power off device, then hold Power + Volume Down', 'info');
 }

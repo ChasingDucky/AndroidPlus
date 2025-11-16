@@ -23,7 +23,14 @@ class WebADBManager {
 
         try {
             // Create credential store for authentication
-            this.credentialStore = new AdbCredentialStore();
+            // AdbCredentialStore might be a class or need to be instantiated differently
+            if (typeof AdbCredentialStore === 'function') {
+                this.credentialStore = new AdbCredentialStore();
+            } else if (typeof AdbCredentialStore === 'object' && AdbCredentialStore.create) {
+                this.credentialStore = await AdbCredentialStore.create();
+            } else {
+                throw new Error('AdbCredentialStore not properly loaded');
+            }
             this.log('WebADB initialized', 'success');
         } catch (error) {
             this.log(`WebADB init error: ${error.message}`, 'error');

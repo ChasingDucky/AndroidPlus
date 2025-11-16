@@ -62,6 +62,10 @@
                 <div class="operation-tabs">
                     <button class="tab-btn active" data-tab="fastboot">Fastboot</button>
                     <button class="tab-btn" data-tab="adb">ADB Commands</button>
+                    <button class="tab-btn" data-tab="file-manager">File Manager</button>
+                    <button class="tab-btn" data-tab="app-manager">App Manager</button>
+                    <button class="tab-btn" data-tab="batch-ops">Batch Operations</button>
+                    <button class="tab-btn" data-tab="device-presets">Device Presets</button>
                     <button class="tab-btn" data-tab="tools">Tools</button>
                 </div>
 
@@ -119,6 +123,31 @@
                     </div>
                 </div>
 
+                <!-- File Manager Tab -->
+                <div id="file-manager-tab" class="tab-content">
+                    <div id="file-manager-content"></div>
+                </div>
+
+                <!-- App Manager Tab -->
+                <div id="app-manager-tab" class="tab-content">
+                    <div id="app-manager-content"></div>
+                </div>
+
+                <!-- Batch Operations Tab -->
+                <div id="batch-ops-tab" class="tab-content">
+                    <div id="batch-ops-content"></div>
+                </div>
+
+                <!-- Device Presets Tab -->
+                <div id="device-presets-tab" class="tab-content">
+                    <h3>Device Presets</h3>
+                    <div class="operation-group">
+                        <p>Select a preset configuration for your device to simplify flashing operations.</p>
+                        <div id="preset-recommendations"></div>
+                        <div id="preset-list"></div>
+                    </div>
+                </div>
+
                 <!-- Tools Tab -->
                 <div id="tools-tab" class="tab-content">
                     <h3>Utilities</h3>
@@ -135,6 +164,13 @@
                         <button id="screenshot-btn" class="btn btn-secondary">Take Screenshot</button>
                         <button id="screenrecord-btn" class="btn btn-secondary">Start Recording</button>
                         <button id="stop-record-btn" class="btn btn-secondary" disabled>Stop Recording</button>
+                    </div>
+
+                    <div class="operation-group">
+                        <h4>System Information</h4>
+                        <button id="battery-info-btn" class="btn btn-secondary">Battery Info</button>
+                        <button id="memory-info-btn" class="btn btn-secondary">Memory Info</button>
+                        <button id="cpu-info-btn" class="btn btn-secondary">CPU Info</button>
                     </div>
                 </div>
             </section>
@@ -173,6 +209,12 @@
         </footer>
     </div>
 
+    <!-- Load all module scripts -->
+    <script src="adb-protocol.js"></script>
+    <script src="file-manager.js"></script>
+    <script src="app-manager.js"></script>
+    <script src="batch-operations.js"></script>
+    <script src="device-presets.js"></script>
     <script type="module" src="main.js"></script>
 </body>
 </html>

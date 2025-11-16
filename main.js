@@ -15,6 +15,10 @@ class AndroidFlasher {
         this.adbProtocol = null;
         this.fastbootProtocol = null;
 
+        // WebADB Manager for full ADB support
+        this.webADBManager = null;
+        this.webADBAvailable = typeof WebADBManager !== 'undefined';
+
         this.initializeUI();
     }
 
@@ -164,14 +168,52 @@ class AndroidFlasher {
             if (this.deviceMode === 'fastboot' && typeof FastbootProtocol !== 'undefined') {
                 this.fastbootProtocol = new FastbootProtocol(this.device, this.endpointIn, this.endpointOut);
                 this.log('Fastboot protocol initialized', 'success');
-            } else if (this.deviceMode === 'adb' && typeof ADBProtocol !== 'undefined') {
-                this.adbProtocol = new ADBProtocol(this.device, this.endpointIn, this.endpointOut);
-                this.log('ADB protocol initialized', 'success');
+            } else if (this.deviceMode === 'adb') {
+                // Try to use WebADB for full authentication support
+                if (this.webADBAvailable) {
+                    try {
+                        this.log('Initializing WebADB with authentication...', 'info');
+                        this.webADBManager = new WebADBManager((msg, type) => this.log(msg, type));
+                        await this.webADBManager.initialize();
 
-                // Note: Full ADB protocol requires authentication
-                this.log('⚠️ Note: ADB mode detected. Full protocol support coming soon.', 'warning');
-                this.log('For now, please use Fastboot mode for flashing operations.', 'info');
-                this.log('To enter Fastboot: Power off device, then hold Power + Volume Down', 'info');
+                        // Reconnect using WebADB
+                        await this.device.close();
+                        await this.webADBManager.connect();
+
+                        this.log('✅ WebADB authenticated successfully!', 'success');
+                        this.log('Full ADB features are now available', 'success');
+                    } catch (webADBError) {
+                        this.log(`WebADB initialization failed: ${webADBError.message}`, 'warning');
+                        this.log('Falling back to basic ADB mode...', 'info');
+
+                        // Reopen device for basic mode
+                        await this.device.open();
+                        if (this.device.configuration === null) {
+                            await this.device.selectConfiguration(1);
+                        }
+                        await this.device.claimInterface(this.interfaceNumber);
+
+                        if (typeof ADBProtocol !== 'undefined') {
+                            this.adbProtocol = new ADBProtocol(this.device, this.endpointIn, this.endpointOut);
+                            this.log('ADB protocol initialized (basic mode)', 'success');
+                        }
+                        this.webADBManager = null;
+                    }
+                } else {
+                    // WebADB not available
+                    this.log('⚠️ WebADB library not loaded', 'warning');
+                    this.log('Run: npm install && npm run dev for full ADB support', 'info');
+
+                    if (typeof ADBProtocol !== 'undefined') {
+                        this.adbProtocol = new ADBProtocol(this.device, this.endpointIn, this.endpointOut);
+                        this.log('ADB protocol initialized (basic mode)', 'success');
+                    }
+                }
+
+                if (!this.webADBManager) {
+                    this.log('⚠️ Note: Basic ADB mode has limited functionality', 'warning');
+                    this.log('For file operations and shell commands, use full WebADB', 'info');
+                }
             }
 
             this.isConnected = true;
@@ -187,6 +229,12 @@ class AndroidFlasher {
     // Disconnect from device
     async disconnectDevice() {
         try {
+            // Disconnect WebADB if active
+            if (this.webADBManager) {
+                await this.webADBManager.disconnect();
+                this.webADBManager = null;
+            }
+
             if (this.device && this.interfaceNumber !== null) {
                 await this.device.releaseInterface(this.interfaceNumber);
                 await this.device.close();
@@ -261,10 +309,26 @@ class AndroidFlasher {
                 } catch (e) {
                     this.log('Could not retrieve all fastboot variables', 'warning');
                 }
+            } else if (this.deviceMode === 'adb' && this.webADBManager) {
+                // Use WebADB to get full device information
+                try {
+                    const deviceInfo = await this.webADBManager.getDeviceInfo();
+                    properties['device-model'] = deviceInfo.model || properties['device-model'];
+                    properties['device-manufacturer'] = deviceInfo.manufacturer || properties['device-manufacturer'];
+                    properties['device-android'] = `Android ${deviceInfo.androidVersion}`;
+                    properties['device-build'] = deviceInfo.buildId || 'N/A';
+                    properties['device-sdk'] = `API ${deviceInfo.sdkVersion}`;
+                    this.log('Full device information retrieved via WebADB', 'success');
+                } catch (e) {
+                    this.log('Could not retrieve device properties via WebADB', 'warning');
+                    properties['device-android'] = 'ADB Mode (Authenticated)';
+                    properties['device-build'] = 'N/A';
+                    properties['device-sdk'] = 'N/A';
+                }
             } else {
-                // In ADB mode, we can't easily get properties without authentication
+                // In ADB mode without WebADB, we can't get properties
                 properties['device-android'] = 'ADB Mode (Auth Required)';
-                properties['device-build'] = 'Connect via Fastboot for details';
+                properties['device-build'] = 'Run: npm install && npm run dev';
                 properties['device-sdk'] = 'N/A';
             }
 
@@ -519,8 +583,26 @@ class AndroidFlasher {
         if (this.deviceMode !== 'adb') {
             throw new Error('Device must be in ADB mode');
         }
+
+        // Use WebADB if available (authenticated connection)
+        if (this.webADBManager) {
+            try {
+                this.log(`Executing shell: ${command}`, 'info');
+                const result = await this.webADBManager.shell(command);
+                if (result) {
+                    this.log('✅ Command executed successfully', 'success');
+                    return result;
+                }
+                return '';
+            } catch (error) {
+                throw new Error(`WebADB shell error: ${error.message}`);
+            }
+        }
+
+        // Fallback to basic mode (usually fails due to authentication)
         try {
             this.log(`Executing shell: ${command}`, 'info');
+            this.log('⚠️ Warning: Using unauthenticated connection', 'warning');
             const encoder = new TextEncoder();
             const decoder = new TextDecoder();
             const shellCmd = `shell:${command}\0`;
@@ -534,6 +616,7 @@ class AndroidFlasher {
                 }
             } catch (e) {
                 this.log(`Response: ${e.message}`, 'warning');
+                throw new Error('Authentication required. Run: npm install && npm run dev');
             }
             return '';
         } catch (error) {
@@ -572,8 +655,45 @@ class AndroidFlasher {
 
     // Push file
     async pushFile() {
-        this.log('File push requires ADB sync protocol (not yet available)', 'warning');
-        this.log('Use: adb push <file> <path>', 'info');
+        if (this.deviceMode !== 'adb') {
+            this.log('File push requires ADB mode', 'error');
+            return;
+        }
+
+        if (!this.webADBManager) {
+            this.log('File push requires WebADB library', 'warning');
+            this.log('Run: npm install && npm run dev', 'info');
+            return;
+        }
+
+        try {
+            // Create file input
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const remotePath = prompt(`Enter remote path for ${file.name}:`, `/sdcard/${file.name}`);
+                if (!remotePath) return;
+
+                this.log(`Pushing file: ${file.name} (${file.size} bytes)`, 'info');
+
+                try {
+                    await this.webADBManager.pushFile(file, remotePath, (progress) => {
+                        if (progress && progress.percentage) {
+                            this.log(`Upload progress: ${Math.round(progress.percentage)}%`, 'info');
+                        }
+                    });
+                    this.log(`✅ File pushed successfully to ${remotePath}`, 'success');
+                } catch (error) {
+                    this.log(`File push failed: ${error.message}`, 'error');
+                }
+            };
+            input.click();
+        } catch (error) {
+            this.log(`Error: ${error.message}`, 'error');
+        }
     }
 
     // Take screenshot

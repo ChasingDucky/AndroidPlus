@@ -514,39 +514,173 @@ class AndroidFlasher {
         }
     }
 
-    // Placeholder methods for features requiring ADB authentication
+    // Execute raw ADB shell command
+    async executeRawShellCommand(command) {
+        if (this.deviceMode !== 'adb') {
+            throw new Error('Device must be in ADB mode');
+        }
+        try {
+            this.log(`Executing shell: ${command}`, 'info');
+            const encoder = new TextEncoder();
+            const decoder = new TextDecoder();
+            const shellCmd = `shell:${command}\0`;
+            const cmdBytes = encoder.encode(shellCmd);
+            await this.device.transferOut(this.endpointOut, cmdBytes);
+            this.log('Command sent...', 'info');
+            try {
+                const result = await this.device.transferIn(this.endpointIn, 65536);
+                if (result.data && result.data.byteLength > 0) {
+                    return decoder.decode(result.data);
+                }
+            } catch (e) {
+                this.log(`Response: ${e.message}`, 'warning');
+            }
+            return '';
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Execute ADB command
+    async executeADBCommand() {
+        const cmdInput = document.getElementById('adb-command');
+        if (!cmdInput) return;
+        const command = cmdInput.value.trim();
+        if (!command) {
+            this.log('Please enter a command', 'error');
+            return;
+        }
+        if (this.deviceMode !== 'adb') {
+            this.log('Device must be in ADB mode', 'error');
+            return;
+        }
+        try {
+            this.log(`Executing: ${command}`, 'info');
+            const result = await this.executeRawShellCommand(command);
+            if (result && result.length > 0) {
+                this.log('Output:', 'success');
+                result.split('\n').forEach(line => {
+                    if (line.trim()) this.log(`  ${line}`, 'info');
+                });
+            } else {
+                this.log('Command sent (no output)', 'info');
+            }
+        } catch (error) {
+            this.log(`Error: ${error.message}`, 'error');
+        }
+    }
+
+    // Push file
     async pushFile() {
-        this.log('File push requires ADB authentication - not yet implemented', 'warning');
-        this.log('Please use: adb push <local> <remote>', 'info');
+        this.log('File push requires ADB sync protocol (not yet available)', 'warning');
+        this.log('Use: adb push <file> <path>', 'info');
     }
 
+    // Take screenshot
     async takeScreenshot() {
-        this.log('Screenshot requires ADB authentication - not yet implemented', 'warning');
-        this.log('Please use: adb shell screencap /sdcard/screenshot.png', 'info');
+        if (this.deviceMode !== 'adb') {
+            this.log('Screenshot requires ADB mode', 'error');
+            return;
+        }
+        try {
+            this.log('Taking screenshot...', 'info');
+            await this.executeRawShellCommand('screencap -p /sdcard/AndroidPlus_screenshot.png');
+            this.log('Screenshot saved: /sdcard/AndroidPlus_screenshot.png', 'success');
+        } catch (error) {
+            this.log(`Screenshot error: ${error.message}`, 'error');
+        }
     }
 
+    // Start recording
     async startRecording() {
-        this.log('Screen recording requires ADB authentication - not yet implemented', 'warning');
-        this.log('Please use: adb shell screenrecord /sdcard/video.mp4', 'info');
+        if (this.deviceMode !== 'adb') {
+            this.log('Recording requires ADB mode', 'error');
+            return;
+        }
+        try {
+            this.log('Starting recording...', 'info');
+            await this.executeRawShellCommand('screenrecord /sdcard/AndroidPlus_recording.mp4 &');
+            this.log('Recording started', 'success');
+            document.getElementById('screenrecord-btn').disabled = true;
+            document.getElementById('stop-record-btn').disabled = false;
+        } catch (error) {
+            this.log(`Recording error: ${error.message}`, 'error');
+        }
     }
 
+    // Stop recording
     async stopRecording() {
-        this.log('Please stop recording manually on device or via adb', 'info');
+        try {
+            await this.executeRawShellCommand('pkill -SIGINT screenrecord');
+            this.log('Recording stopped: /sdcard/AndroidPlus_recording.mp4', 'success');
+            document.getElementById('screenrecord-btn').disabled = false;
+            document.getElementById('stop-record-btn').disabled = true;
+        } catch (error) {
+            this.log(`Stop error: ${error.message}`, 'error');
+        }
     }
 
+    // Battery info
     async showBatteryInfo() {
-        this.log('Battery info requires ADB authentication - not yet implemented', 'warning');
-        this.log('Please use: adb shell dumpsys battery', 'info');
+        if (this.deviceMode !== 'adb') {
+            this.log('Battery info requires ADB mode', 'error');
+            return;
+        }
+        try {
+            this.log('Getting battery info...', 'info');
+            const result = await this.executeRawShellCommand('dumpsys battery');
+            if (result && result.length > 0) {
+                this.log('Battery Information:', 'success');
+                result.split('\n').forEach(line => {
+                    if (line.includes('level') || line.includes('temperature') ||
+                        line.includes('voltage') || line.includes('status')) {
+                        this.log(`  ${line.trim()}`, 'info');
+                    }
+                });
+            }
+        } catch (error) {
+            this.log(`Battery error: ${error.message}`, 'error');
+        }
     }
 
+    // Memory info
     async showMemoryInfo() {
-        this.log('Memory info requires ADB authentication - not yet implemented', 'warning');
-        this.log('Please use: adb shell cat /proc/meminfo', 'info');
+        if (this.deviceMode !== 'adb') {
+            this.log('Memory info requires ADB mode', 'error');
+            return;
+        }
+        try {
+            this.log('Getting memory info...', 'info');
+            const result = await this.executeRawShellCommand('cat /proc/meminfo | head -20');
+            if (result && result.length > 0) {
+                this.log('Memory Information:', 'success');
+                result.split('\n').slice(0, 10).forEach(line => {
+                    if (line.trim()) this.log(`  ${line.trim()}`, 'info');
+                });
+            }
+        } catch (error) {
+            this.log(`Memory error: ${error.message}`, 'error');
+        }
     }
 
+    // CPU info
     async showCPUInfo() {
-        this.log('CPU info requires ADB authentication - not yet implemented', 'warning');
-        this.log('Please use: adb shell cat /proc/cpuinfo', 'info');
+        if (this.deviceMode !== 'adb') {
+            this.log('CPU info requires ADB mode', 'error');
+            return;
+        }
+        try {
+            this.log('Getting CPU info...', 'info');
+            const result = await this.executeRawShellCommand('cat /proc/cpuinfo | head -30');
+            if (result && result.length > 0) {
+                this.log('CPU Information:', 'success');
+                result.split('\n').slice(0, 15).forEach(line => {
+                    if (line.trim()) this.log(`  ${line.trim()}`, 'info');
+                });
+            }
+        } catch (error) {
+            this.log(`CPU error: ${error.message}`, 'error');
+        }
     }
 
     // Show/hide progress bar

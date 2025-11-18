@@ -174,9 +174,51 @@ npm run preview
 
 ## 📖 Documentation
 
-- **[USAGE.md](USAGE.md)** - Complete user guide with tutorials
-- **[TECHNICAL.md](TECHNICAL.md)** - Technical documentation and API reference
-- **[CHANGELOG.md](CHANGELOG.md)** - Version history and updates
+完整的文档体系，涵盖从入门到精通的所有内容：
+
+### 📘 用户文档
+- **[WIKI.md](WIKI.md)** - **用户使用指南** - 完整的用户手册，包含：
+  - 快速开始（5分钟上手）
+  - 详细功能说明（Fastboot、ADB、文件管理、应用管理）
+  - 常见问题解答（FAQ）
+  - 故障排除指南
+  - 安全提示与最佳实践
+  - 品牌特定注意事项
+
+- **[USAGE.md](USAGE.md)** - 使用教程和操作示例
+
+- **[QUICKSTART.md](QUICKSTART.md)** - 快速启动指南（多种运行方式）
+
+- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - 问题诊断和解决方案
+
+### 📗 开发者文档
+- **[API.md](API.md)** - **API 参考文档** - 完整的 API 手册，包含：
+  - 所有类和方法的详细说明
+  - 参数和返回值说明
+  - 完整的代码示例
+  - 错误处理指南
+  - 事件系统文档
+  - 浏览器兼容性说明
+
+- **[TECHNICAL.md](TECHNICAL.md)** - 技术架构和协议实现
+
+- **[WEBADB_INTEGRATION.md](WEBADB_INTEGRATION.md)** - WebADB 库集成指南
+
+### 📕 项目信息
+- **[CHANGELOG.md](CHANGELOG.md)** - 版本历史和更新日志
+
+### 🎯 快速导航
+
+| 我想... | 查看文档 |
+|--------|---------|
+| 快速开始使用 AndroidPlus | [WIKI.md - 快速开始](WIKI.md#快速开始) |
+| 了解如何刷机 | [WIKI.md - Fastboot 刷机](WIKI.md#fastboot-刷机) |
+| 管理设备文件 | [WIKI.md - 文件管理](WIKI.md#文件管理) |
+| 卸载系统应用 | [WIKI.md - 应用管理](WIKI.md#应用管理) |
+| 创建自动化脚本 | [WIKI.md - 批处理脚本](WIKI.md#批处理脚本) |
+| 解决连接问题 | [WIKI.md - 故障排除](WIKI.md#故障排除) |
+| 开发集成 AndroidPlus | [API.md](API.md) |
+| 了解 WebADB 认证 | [WEBADB_INTEGRATION.md](WEBADB_INTEGRATION.md) |
 
 ## 🎓 Tutorials
 

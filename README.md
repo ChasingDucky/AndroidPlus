@@ -191,6 +191,12 @@ npm run preview
 
 - **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - 问题诊断和解决方案
 
+- **[I18N.md](I18N.md)** - **国际化文档** - 多语言支持说明：
+  - 支持的语言列表
+  - 使用方法和 API 参考
+  - 添加新语言指南
+  - 翻译最佳实践
+
 ### 📗 开发者文档
 - **[API.md](API.md)** - **API 参考文档** - 完整的 API 手册，包含：
   - 所有类和方法的详细说明

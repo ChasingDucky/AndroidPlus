@@ -76,6 +76,23 @@ class AndroidFlasher {
         // Console operations
         document.getElementById('clear-console-btn')?.addEventListener('click', () => this.clearConsole());
         document.getElementById('download-log-btn')?.addEventListener('click', () => this.downloadLog());
+
+        // Language selector
+        const languageSelect = document.getElementById('language-select');
+        if (languageSelect && window.i18n) {
+            // Set current language in dropdown
+            languageSelect.value = window.i18n.getLocale();
+
+            // Listen for language changes
+            languageSelect.addEventListener('change', async (e) => {
+                await window.i18n.setLocale(e.target.value);
+            });
+        }
+
+        // Listen for locale change events
+        document.addEventListener('localeChanged', (e) => {
+            this.log(`Language changed to: ${e.detail.locale}`, 'info');
+        });
     }
 
     // Switch between operation tabs

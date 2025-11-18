@@ -1,0 +1,259 @@
+{
+  "app": {
+    "name": "AndroidPlus",
+    "subtitle": "Universal Android Web Flasher",
+    "version": "2.0"
+  },
+  "common": {
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "connected": "Connected",
+    "disconnected": "Disconnected",
+    "execute": "Execute",
+    "cancel": "Cancel",
+    "ok": "OK",
+    "yes": "Yes",
+    "no": "No",
+    "save": "Save",
+    "load": "Load",
+    "delete": "Delete",
+    "download": "Download",
+    "upload": "Upload",
+    "refresh": "Refresh",
+    "clear": "Clear",
+    "close": "Close",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Info",
+    "loading": "Loading...",
+    "file_size_units": "B,KB,MB,GB,TB"
+  },
+  "connection": {
+    "title": "Device Connection",
+    "status": "Status",
+    "not_connected": "Not Connected",
+    "connect_device": "Connect Device",
+    "disconnect_device": "Disconnect",
+    "device_info": "Device Information",
+    "model": "Model",
+    "manufacturer": "Manufacturer",
+    "serial": "Serial Number",
+    "android_version": "Android Version",
+    "build_id": "Build ID",
+    "sdk_version": "SDK Version",
+    "mode_adb": "ADB Mode",
+    "mode_fastboot": "Fastboot Mode",
+    "tips": {
+      "title": "💡 Tip",
+      "fastboot": "For best results, connect your device in Fastboot mode",
+      "fastboot_howto": "To enter Fastboot: Power off device, then hold Power + Volume Down"
+    }
+  },
+  "tabs": {
+    "fastboot": "Fastboot",
+    "adb": "ADB Commands",
+    "files": "File Manager",
+    "apps": "App Manager",
+    "tools": "Tools",
+    "batch": "Batch Operations",
+    "presets": "Device Presets"
+  },
+  "fastboot": {
+    "title": "Fastboot Operations",
+    "flash": {
+      "title": "Flash Image",
+      "choose_file": "Choose Image File",
+      "partition": "Partition",
+      "partition_placeholder": "Select or enter partition name",
+      "flash_button": "Flash Image",
+      "success": "Image flashed successfully",
+      "error": "Flash failed: {error}"
+    },
+    "bootloader": {
+      "unlock": "Unlock Bootloader",
+      "lock": "Lock Bootloader",
+      "unlock_warning": "⚠️ Warning: Unlocking bootloader will ERASE ALL DATA!",
+      "lock_warning": "⚠️ Warning: Locking bootloader will ERASE ALL DATA!"
+    },
+    "reboot": {
+      "title": "Reboot Options",
+      "system": "Reboot System",
+      "bootloader": "Reboot to Bootloader",
+      "recovery": "Reboot to Recovery"
+    },
+    "erase": {
+      "title": "Erase Partition",
+      "button": "Erase Partition",
+      "warning": "⚠️ Warning: This will permanently delete partition data!"
+    }
+  },
+  "adb": {
+    "title": "ADB Commands",
+    "command_input": "Enter ADB command",
+    "execute": "Execute",
+    "quick_commands": "Quick Commands",
+    "shell_prefix": "shell:"
+  },
+  "files": {
+    "title": "File Manager",
+    "current_path": "Current Path",
+    "navigate_up": "⬆️ Parent Directory",
+    "create_folder": "Create Folder",
+    "upload_file": "Upload File",
+    "refresh": "Refresh",
+    "name": "Name",
+    "size": "Size",
+    "permissions": "Permissions",
+    "modified": "Modified",
+    "actions": "Actions",
+    "rename": "Rename",
+    "delete": "Delete",
+    "download": "Download",
+    "delete_confirm": "Are you sure you want to delete {name}?",
+    "rename_prompt": "Enter new name for {name}:",
+    "create_folder_prompt": "Enter folder name:",
+    "upload_success": "File uploaded successfully",
+    "upload_error": "Upload failed: {error}"
+  },
+  "apps": {
+    "title": "App Manager",
+    "refresh": "Refresh Apps",
+    "filter": {
+      "all": "All Apps",
+      "user": "User Apps",
+      "system": "System Apps",
+      "enabled": "Enabled",
+      "disabled": "Disabled"
+    },
+    "search": "Search apps...",
+    "package_name": "Package Name",
+    "version": "Version",
+    "actions": {
+      "uninstall": "Uninstall",
+      "disable": "Disable",
+      "enable": "Enable",
+      "clear_data": "Clear Data",
+      "force_stop": "Force Stop",
+      "launch": "Launch"
+    },
+    "batch": {
+      "uninstall": "Batch Uninstall",
+      "select": "Select Apps"
+    },
+    "install": {
+      "title": "Install APK",
+      "button": "Install APK",
+      "success": "APK installed successfully",
+      "error": "Install failed: {error}"
+    }
+  },
+  "tools": {
+    "title": "Tools",
+    "system_info": {
+      "title": "System Information",
+      "battery": "Battery Info",
+      "memory": "Memory Info",
+      "cpu": "CPU Info"
+    },
+    "media": {
+      "title": "Media Capture",
+      "screenshot": "Take Screenshot",
+      "record_start": "Start Recording",
+      "record_stop": "Stop Recording"
+    },
+    "file_ops": {
+      "title": "File Operations",
+      "push": "Push File"
+    }
+  },
+  "batch": {
+    "title": "Batch Operations",
+    "new_script": "Create New Script",
+    "load_template": "Load Template",
+    "save_script": "Save Script",
+    "execute": "Execute Script",
+    "script_name": "Script Name",
+    "script_desc": "Description",
+    "steps": "Steps",
+    "add_step": {
+      "flash": "Add Flash Step",
+      "adb": "Add ADB Step",
+      "reboot": "Add Reboot Step",
+      "delay": "Add Delay Step"
+    },
+    "templates": {
+      "flash_rom": "Flash Full ROM",
+      "debloat": "Debloat Device",
+      "optimize": "Performance Optimization",
+      "backup": "Backup Workflow"
+    }
+  },
+  "presets": {
+    "title": "Device Presets",
+    "load": "Load Preset",
+    "create": "Create Custom Preset",
+    "devices": {
+      "pixel": "Google Pixel",
+      "samsung": "Samsung Galaxy",
+      "xiaomi": "Xiaomi",
+      "oneplus": "OnePlus",
+      "motorola": "Motorola",
+      "generic": "Generic Device"
+    }
+  },
+  "console": {
+    "title": "Console",
+    "clear": "Clear Console",
+    "download": "Download Log",
+    "initialized": "AndroidPlus initialized",
+    "click_connect": "Click \"Connect Device\" to begin"
+  },
+  "messages": {
+    "device_selected": "Device selected: {name}",
+    "device_opened": "Device opened successfully",
+    "device_mode": "Device mode detected: {mode}",
+    "interface_claimed": "Claimed interface {num}",
+    "endpoints_found": "Endpoints found - In: {in}, Out: {out}",
+    "webadb_init": "Initializing WebADB with authentication...",
+    "webadb_success": "✅ WebADB authenticated successfully!",
+    "webadb_available": "Full ADB features are now available",
+    "webadb_failed": "WebADB initialization failed: {error}",
+    "webadb_fallback": "Falling back to basic ADB mode...",
+    "webadb_not_loaded": "⚠️ WebADB library not loaded",
+    "webadb_install_npm": "Run: npm install && npm run dev for full ADB support",
+    "adb_basic_mode": "ADB protocol initialized (basic mode)",
+    "adb_limited": "⚠️ Note: Basic ADB mode has limited functionality",
+    "adb_use_webadb": "For file operations and shell commands, use full WebADB",
+    "fastboot_init": "Fastboot protocol initialized",
+    "retrieving_info": "Retrieving device information...",
+    "info_retrieved": "Device information retrieved successfully",
+    "auth_required": "Authentication required. Run: npm install && npm run dev",
+    "command_sent": "Command sent...",
+    "command_success": "✅ Command executed successfully",
+    "disconnected": "Disconnected from device"
+  },
+  "errors": {
+    "connection_failed": "Connection error: {error}",
+    "device_required": "Device must be in {mode} mode",
+    "command_failed": "Command failed: {error}",
+    "file_required": "Please select a file",
+    "partition_required": "Please select a partition",
+    "operation_cancelled": "Operation cancelled by user",
+    "webadb_required": "This operation requires WebADB library"
+  },
+  "warnings": {
+    "data_loss": "⚠️ Warning: This operation will erase all data!",
+    "warranty_void": "⚠️ Warning: This may void your warranty!",
+    "brick_risk": "⚠️ Warning: Incorrect operation may brick your device!",
+    "backup_first": "Please backup your data before proceeding"
+  },
+  "footer": {
+    "warning": "⚠️ Warning: Flashing your device may void your warranty and can brick your device if done incorrectly. Always backup your data first.",
+    "credits": "AndroidPlus - Universal Android Web Flasher |"
+  },
+  "language": {
+    "select": "Language",
+    "current": "Current Language"
+  }
+}

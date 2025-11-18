@@ -1,0 +1,259 @@
+{
+  "app": {
+    "name": "AndroidPlus",
+    "subtitle": "ユニバーサル Android Web フラッシャー",
+    "version": "2.0"
+  },
+  "common": {
+    "connect": "接続",
+    "disconnect": "切断",
+    "connected": "接続済み",
+    "disconnected": "未接続",
+    "execute": "実行",
+    "cancel": "キャンセル",
+    "ok": "OK",
+    "yes": "はい",
+    "no": "いいえ",
+    "save": "保存",
+    "load": "読み込み",
+    "delete": "削除",
+    "download": "ダウンロード",
+    "upload": "アップロード",
+    "refresh": "更新",
+    "clear": "クリア",
+    "close": "閉じる",
+    "error": "エラー",
+    "success": "成功",
+    "warning": "警告",
+    "info": "情報",
+    "loading": "読み込み中...",
+    "file_size_units": "B,KB,MB,GB,TB"
+  },
+  "connection": {
+    "title": "デバイス接続",
+    "status": "ステータス",
+    "not_connected": "未接続",
+    "connect_device": "デバイスを接続",
+    "disconnect_device": "接続を解除",
+    "device_info": "デバイス情報",
+    "model": "モデル",
+    "manufacturer": "メーカー",
+    "serial": "シリアル番号",
+    "android_version": "Android バージョン",
+    "build_id": "ビルド ID",
+    "sdk_version": "SDK バージョン",
+    "mode_adb": "ADB モード",
+    "mode_fastboot": "Fastboot モード",
+    "tips": {
+      "title": "💡 ヒント",
+      "fastboot": "最良の結果を得るには、Fastboot モードでデバイスを接続してください",
+      "fastboot_howto": "Fastboot への入り方：電源を切った後、電源ボタンと音量ダウンボタンを同時に押します"
+    }
+  },
+  "tabs": {
+    "fastboot": "Fastboot",
+    "adb": "ADB コマンド",
+    "files": "ファイル管理",
+    "apps": "アプリ管理",
+    "tools": "ツール",
+    "batch": "バッチ操作",
+    "presets": "デバイスプリセット"
+  },
+  "fastboot": {
+    "title": "Fastboot 操作",
+    "flash": {
+      "title": "イメージの書き込み",
+      "choose_file": "イメージファイルを選択",
+      "partition": "パーティション",
+      "partition_placeholder": "パーティション名を選択または入力",
+      "flash_button": "イメージを書き込む",
+      "success": "イメージの書き込みに成功しました",
+      "error": "書き込みに失敗しました：{error}"
+    },
+    "bootloader": {
+      "unlock": "Bootloader のロック解除",
+      "lock": "Bootloader のロック",
+      "unlock_warning": "⚠️ 警告：Bootloader のロック解除により、すべてのデータが消去されます！",
+      "lock_warning": "⚠️ 警告：Bootloader のロックにより、すべてのデータが消去されます！"
+    },
+    "reboot": {
+      "title": "再起動オプション",
+      "system": "システムに再起動",
+      "bootloader": "Bootloader に再起動",
+      "recovery": "Recovery に再起動"
+    },
+    "erase": {
+      "title": "パーティションの消去",
+      "button": "パーティションを消去",
+      "warning": "⚠️ 警告：パーティションのデータが永久に削除されます！"
+    }
+  },
+  "adb": {
+    "title": "ADB コマンド",
+    "command_input": "ADB コマンドを入力",
+    "execute": "実行",
+    "quick_commands": "クイックコマンド",
+    "shell_prefix": "shell:"
+  },
+  "files": {
+    "title": "ファイルマネージャー",
+    "current_path": "現在のパス",
+    "navigate_up": "⬆️ 上のディレクトリ",
+    "create_folder": "フォルダを作成",
+    "upload_file": "ファイルをアップロード",
+    "refresh": "更新",
+    "name": "名前",
+    "size": "サイズ",
+    "permissions": "権限",
+    "modified": "更新日時",
+    "actions": "操作",
+    "rename": "名前変更",
+    "delete": "削除",
+    "download": "ダウンロード",
+    "delete_confirm": "{name} を削除してもよろしいですか？",
+    "rename_prompt": "{name} の新しい名前を入力してください：",
+    "create_folder_prompt": "フォルダ名を入力してください：",
+    "upload_success": "ファイルのアップロードに成功しました",
+    "upload_error": "アップロードに失敗しました：{error}"
+  },
+  "apps": {
+    "title": "アプリマネージャー",
+    "refresh": "アプリリストを更新",
+    "filter": {
+      "all": "すべてのアプリ",
+      "user": "ユーザーアプリ",
+      "system": "システムアプリ",
+      "enabled": "有効",
+      "disabled": "無効"
+    },
+    "search": "アプリを検索...",
+    "package_name": "パッケージ名",
+    "version": "バージョン",
+    "actions": {
+      "uninstall": "アンインストール",
+      "disable": "無効化",
+      "enable": "有効化",
+      "clear_data": "データ消去",
+      "force_stop": "強制停止",
+      "launch": "起動"
+    },
+    "batch": {
+      "uninstall": "一括アンインストール",
+      "select": "アプリを選択"
+    },
+    "install": {
+      "title": "APK のインストール",
+      "button": "APK をインストール",
+      "success": "APK のインストールに成功しました",
+      "error": "インストールに失敗しました：{error}"
+    }
+  },
+  "tools": {
+    "title": "ツール",
+    "system_info": {
+      "title": "システム情報",
+      "battery": "バッテリー情報",
+      "memory": "メモリ情報",
+      "cpu": "CPU 情報"
+    },
+    "media": {
+      "title": "メディアキャプチャ",
+      "screenshot": "スクリーンショット",
+      "record_start": "画面録画を開始",
+      "record_stop": "画面録画を停止"
+    },
+    "file_ops": {
+      "title": "ファイル操作",
+      "push": "ファイルをプッシュ"
+    }
+  },
+  "batch": {
+    "title": "バッチ操作",
+    "new_script": "新しいスクリプトを作成",
+    "load_template": "テンプレートを読み込む",
+    "save_script": "スクリプトを保存",
+    "execute": "スクリプトを実行",
+    "script_name": "スクリプト名",
+    "script_desc": "説明",
+    "steps": "ステップ",
+    "add_step": {
+      "flash": "書き込みステップを追加",
+      "adb": "ADB ステップを追加",
+      "reboot": "再起動ステップを追加",
+      "delay": "遅延ステップを追加"
+    },
+    "templates": {
+      "flash_rom": "完全な ROM を書き込む",
+      "debloat": "システムの軽量化",
+      "optimize": "パフォーマンスの最適化",
+      "backup": "バックアップワークフロー"
+    }
+  },
+  "presets": {
+    "title": "デバイスプリセット",
+    "load": "プリセットを読み込む",
+    "create": "カスタムプリセットを作成",
+    "devices": {
+      "pixel": "Google Pixel",
+      "samsung": "Samsung Galaxy",
+      "xiaomi": "Xiaomi",
+      "oneplus": "OnePlus",
+      "motorola": "Motorola",
+      "generic": "汎用デバイス"
+    }
+  },
+  "console": {
+    "title": "コンソール",
+    "clear": "コンソールをクリア",
+    "download": "ログをダウンロード",
+    "initialized": "AndroidPlus が初期化されました",
+    "click_connect": "「デバイスを接続」をクリックして開始してください"
+  },
+  "messages": {
+    "device_selected": "デバイスが選択されました：{name}",
+    "device_opened": "デバイスが正常に開かれました",
+    "device_mode": "デバイスモードを検出しました：{mode}",
+    "interface_claimed": "インターフェース {num} を要求しました",
+    "endpoints_found": "エンドポイントが見つかりました - 入力：{in}、出力：{out}",
+    "webadb_init": "WebADB 認証を初期化しています...",
+    "webadb_success": "✅ WebADB 認証に成功しました！",
+    "webadb_available": "完全な ADB 機能が利用可能になりました",
+    "webadb_failed": "WebADB の初期化に失敗しました：{error}",
+    "webadb_fallback": "基本 ADB モードにフォールバックしています...",
+    "webadb_not_loaded": "⚠️ WebADB ライブラリが読み込まれていません",
+    "webadb_install_npm": "実行してください：npm install && npm run dev で完全な ADB サポートを取得",
+    "adb_basic_mode": "ADB プロトコルが初期化されました（基本モード）",
+    "adb_limited": "⚠️ 注意：基本 ADB モードは機能が制限されています",
+    "adb_use_webadb": "ファイル操作と shell コマンドには完全な WebADB が必要です",
+    "fastboot_init": "Fastboot プロトコルが初期化されました",
+    "retrieving_info": "デバイス情報を取得しています...",
+    "info_retrieved": "デバイス情報の取得に成功しました",
+    "auth_required": "認証が必要です。実行してください：npm install && npm run dev",
+    "command_sent": "コマンドが送信されました...",
+    "command_success": "✅ コマンドの実行に成功しました",
+    "disconnected": "デバイスから切断されました"
+  },
+  "errors": {
+    "connection_failed": "接続エラー：{error}",
+    "device_required": "デバイスは {mode} モードである必要があります",
+    "command_failed": "コマンドが失敗しました：{error}",
+    "file_required": "ファイルを選択してください",
+    "partition_required": "パーティションを選択してください",
+    "operation_cancelled": "操作がユーザーによってキャンセルされました",
+    "webadb_required": "この操作には WebADB ライブラリが必要です"
+  },
+  "warnings": {
+    "data_loss": "⚠️ 警告：この操作により、すべてのデータが消去されます！",
+    "warranty_void": "⚠️ 警告：この操作により、保証が無効になる可能性があります！",
+    "brick_risk": "⚠️ 警告：誤った操作により、デバイスが起動不能になる可能性があります！",
+    "backup_first": "続行する前に、データをバックアップしてください"
+  },
+  "footer": {
+    "warning": "⚠️ 警告：デバイスの書き換えにより保証が無効になる可能性があり、誤った操作によりデバイスが起動不能になる可能性があります。必ず事前にデータをバックアップしてください。",
+    "credits": "AndroidPlus - ユニバーサル Android Web フラッシャー |"
+  },
+  "language": {
+    "select": "言語",
+    "current": "現在の言語"
+  }
+}

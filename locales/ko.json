@@ -1,0 +1,259 @@
+{
+  "app": {
+    "name": "AndroidPlus",
+    "subtitle": "유니버설 Android 웹 플래셔",
+    "version": "2.0"
+  },
+  "common": {
+    "connect": "연결",
+    "disconnect": "연결 해제",
+    "connected": "연결됨",
+    "disconnected": "연결되지 않음",
+    "execute": "실행",
+    "cancel": "취소",
+    "ok": "확인",
+    "yes": "예",
+    "no": "아니오",
+    "save": "저장",
+    "load": "불러오기",
+    "delete": "삭제",
+    "download": "다운로드",
+    "upload": "업로드",
+    "refresh": "새로고침",
+    "clear": "지우기",
+    "close": "닫기",
+    "error": "오류",
+    "success": "성공",
+    "warning": "경고",
+    "info": "정보",
+    "loading": "로딩 중...",
+    "file_size_units": "B,KB,MB,GB,TB"
+  },
+  "connection": {
+    "title": "기기 연결",
+    "status": "상태",
+    "not_connected": "연결되지 않음",
+    "connect_device": "기기 연결",
+    "disconnect_device": "연결 해제",
+    "device_info": "기기 정보",
+    "model": "모델",
+    "manufacturer": "제조사",
+    "serial": "일련번호",
+    "android_version": "Android 버전",
+    "build_id": "빌드 ID",
+    "sdk_version": "SDK 버전",
+    "mode_adb": "ADB 모드",
+    "mode_fastboot": "Fastboot 모드",
+    "tips": {
+      "title": "💡 팁",
+      "fastboot": "최상의 결과를 얻으려면 Fastboot 모드에서 기기를 연결하세요",
+      "fastboot_howto": "Fastboot 진입 방법: 전원을 끈 후 전원 버튼과 볼륨 다운 버튼을 동시에 누르세요"
+    }
+  },
+  "tabs": {
+    "fastboot": "Fastboot",
+    "adb": "ADB 명령",
+    "files": "파일 관리",
+    "apps": "앱 관리",
+    "tools": "도구",
+    "batch": "배치 작업",
+    "presets": "기기 프리셋"
+  },
+  "fastboot": {
+    "title": "Fastboot 작업",
+    "flash": {
+      "title": "이미지 플래싱",
+      "choose_file": "이미지 파일 선택",
+      "partition": "파티션",
+      "partition_placeholder": "파티션 이름 선택 또는 입력",
+      "flash_button": "이미지 플래시",
+      "success": "이미지 플래싱 성공",
+      "error": "플래싱 실패: {error}"
+    },
+    "bootloader": {
+      "unlock": "부트로더 잠금 해제",
+      "lock": "부트로더 잠금",
+      "unlock_warning": "⚠️ 경고: 부트로더 잠금 해제 시 모든 데이터가 삭제됩니다!",
+      "lock_warning": "⚠️ 경고: 부트로더 잠금 시 모든 데이터가 삭제됩니다!"
+    },
+    "reboot": {
+      "title": "재부팅 옵션",
+      "system": "시스템으로 재부팅",
+      "bootloader": "부트로더로 재부팅",
+      "recovery": "복구 모드로 재부팅"
+    },
+    "erase": {
+      "title": "파티션 지우기",
+      "button": "파티션 지우기",
+      "warning": "⚠️ 경고: 파티션 데이터가 영구적으로 삭제됩니다!"
+    }
+  },
+  "adb": {
+    "title": "ADB 명령",
+    "command_input": "ADB 명령 입력",
+    "execute": "실행",
+    "quick_commands": "빠른 명령",
+    "shell_prefix": "shell:"
+  },
+  "files": {
+    "title": "파일 관리자",
+    "current_path": "현재 경로",
+    "navigate_up": "⬆️ 상위 디렉토리",
+    "create_folder": "폴더 만들기",
+    "upload_file": "파일 업로드",
+    "refresh": "새로고침",
+    "name": "이름",
+    "size": "크기",
+    "permissions": "권한",
+    "modified": "수정 시간",
+    "actions": "작업",
+    "rename": "이름 변경",
+    "delete": "삭제",
+    "download": "다운로드",
+    "delete_confirm": "{name}을(를) 삭제하시겠습니까?",
+    "rename_prompt": "{name}의 새 이름을 입력하세요:",
+    "create_folder_prompt": "폴더 이름을 입력하세요:",
+    "upload_success": "파일 업로드 성공",
+    "upload_error": "업로드 실패: {error}"
+  },
+  "apps": {
+    "title": "앱 관리자",
+    "refresh": "앱 목록 새로고침",
+    "filter": {
+      "all": "모든 앱",
+      "user": "사용자 앱",
+      "system": "시스템 앱",
+      "enabled": "활성화됨",
+      "disabled": "비활성화됨"
+    },
+    "search": "앱 검색...",
+    "package_name": "패키지 이름",
+    "version": "버전",
+    "actions": {
+      "uninstall": "제거",
+      "disable": "비활성화",
+      "enable": "활성화",
+      "clear_data": "데이터 지우기",
+      "force_stop": "강제 종료",
+      "launch": "실행"
+    },
+    "batch": {
+      "uninstall": "일괄 제거",
+      "select": "앱 선택"
+    },
+    "install": {
+      "title": "APK 설치",
+      "button": "APK 설치",
+      "success": "APK 설치 성공",
+      "error": "설치 실패: {error}"
+    }
+  },
+  "tools": {
+    "title": "도구",
+    "system_info": {
+      "title": "시스템 정보",
+      "battery": "배터리 정보",
+      "memory": "메모리 정보",
+      "cpu": "CPU 정보"
+    },
+    "media": {
+      "title": "미디어 캡처",
+      "screenshot": "스크린샷",
+      "record_start": "화면 녹화 시작",
+      "record_stop": "화면 녹화 중지"
+    },
+    "file_ops": {
+      "title": "파일 작업",
+      "push": "파일 전송"
+    }
+  },
+  "batch": {
+    "title": "배치 작업",
+    "new_script": "새 스크립트 만들기",
+    "load_template": "템플릿 불러오기",
+    "save_script": "스크립트 저장",
+    "execute": "스크립트 실행",
+    "script_name": "스크립트 이름",
+    "script_desc": "설명",
+    "steps": "단계",
+    "add_step": {
+      "flash": "플래싱 단계 추가",
+      "adb": "ADB 단계 추가",
+      "reboot": "재부팅 단계 추가",
+      "delay": "지연 단계 추가"
+    },
+    "templates": {
+      "flash_rom": "전체 ROM 플래시",
+      "debloat": "시스템 경량화",
+      "optimize": "성능 최적화",
+      "backup": "백업 워크플로"
+    }
+  },
+  "presets": {
+    "title": "기기 프리셋",
+    "load": "프리셋 불러오기",
+    "create": "사용자 정의 프리셋 만들기",
+    "devices": {
+      "pixel": "Google Pixel",
+      "samsung": "Samsung Galaxy",
+      "xiaomi": "Xiaomi",
+      "oneplus": "OnePlus",
+      "motorola": "Motorola",
+      "generic": "범용 기기"
+    }
+  },
+  "console": {
+    "title": "콘솔",
+    "clear": "콘솔 지우기",
+    "download": "로그 다운로드",
+    "initialized": "AndroidPlus가 초기화되었습니다",
+    "click_connect": "\"기기 연결\"을 클릭하여 시작하세요"
+  },
+  "messages": {
+    "device_selected": "기기가 선택되었습니다: {name}",
+    "device_opened": "기기가 성공적으로 열렸습니다",
+    "device_mode": "기기 모드 감지됨: {mode}",
+    "interface_claimed": "인터페이스 {num}이(가) 요청되었습니다",
+    "endpoints_found": "엔드포인트를 찾았습니다 - 입력: {in}, 출력: {out}",
+    "webadb_init": "WebADB 인증을 초기화하는 중...",
+    "webadb_success": "✅ WebADB 인증 성공!",
+    "webadb_available": "전체 ADB 기능을 사용할 수 있습니다",
+    "webadb_failed": "WebADB 초기화 실패: {error}",
+    "webadb_fallback": "기본 ADB 모드로 전환 중...",
+    "webadb_not_loaded": "⚠️ WebADB 라이브러리가 로드되지 않았습니다",
+    "webadb_install_npm": "실행하세요: npm install && npm run dev로 전체 ADB 지원 받기",
+    "adb_basic_mode": "ADB 프로토콜이 초기화되었습니다(기본 모드)",
+    "adb_limited": "⚠️ 참고: 기본 ADB 모드는 기능이 제한됩니다",
+    "adb_use_webadb": "파일 작업 및 셸 명령에는 전체 WebADB가 필요합니다",
+    "fastboot_init": "Fastboot 프로토콜이 초기화되었습니다",
+    "retrieving_info": "기기 정보를 가져오는 중...",
+    "info_retrieved": "기기 정보를 성공적으로 가져왔습니다",
+    "auth_required": "인증이 필요합니다. 실행하세요: npm install && npm run dev",
+    "command_sent": "명령이 전송되었습니다...",
+    "command_success": "✅ 명령 실행 성공",
+    "disconnected": "기기 연결이 해제되었습니다"
+  },
+  "errors": {
+    "connection_failed": "연결 오류: {error}",
+    "device_required": "기기가 {mode} 모드여야 합니다",
+    "command_failed": "명령 실패: {error}",
+    "file_required": "파일을 선택하세요",
+    "partition_required": "파티션을 선택하세요",
+    "operation_cancelled": "작업이 사용자에 의해 취소되었습니다",
+    "webadb_required": "이 작업에는 WebADB 라이브러리가 필요합니다"
+  },
+  "warnings": {
+    "data_loss": "⚠️ 경고: 이 작업은 모든 데이터를 삭제합니다!",
+    "warranty_void": "⚠️ 경고: 이 작업은 보증을 무효화할 수 있습니다!",
+    "brick_risk": "⚠️ 경고: 잘못된 작업은 기기를 벽돌로 만들 수 있습니다!",
+    "backup_first": "계속하기 전에 데이터를 백업하세요"
+  },
+  "footer": {
+    "warning": "⚠️ 경고: 기기 플래싱은 보증을 무효화할 수 있으며, 잘못된 작업은 기기를 벽돌로 만들 수 있습니다. 반드시 먼저 데이터를 백업하세요.",
+    "credits": "AndroidPlus - 유니버설 Android 웹 플래셔 |"
+  },
+  "language": {
+    "select": "언어",
+    "current": "현재 언어"
+  }
+}

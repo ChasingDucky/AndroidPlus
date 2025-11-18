@@ -1,0 +1,259 @@
+{
+  "app": {
+    "name": "AndroidPlus",
+    "subtitle": "通用安卓 Web 刷機工具",
+    "version": "2.0"
+  },
+  "common": {
+    "connect": "連接",
+    "disconnect": "斷開",
+    "connected": "已連接",
+    "disconnected": "未連接",
+    "execute": "執行",
+    "cancel": "取消",
+    "ok": "確定",
+    "yes": "是",
+    "no": "否",
+    "save": "儲存",
+    "load": "載入",
+    "delete": "刪除",
+    "download": "下載",
+    "upload": "上傳",
+    "refresh": "重新整理",
+    "clear": "清空",
+    "close": "關閉",
+    "error": "錯誤",
+    "success": "成功",
+    "warning": "警告",
+    "info": "資訊",
+    "loading": "載入中...",
+    "file_size_units": "B,KB,MB,GB,TB"
+  },
+  "connection": {
+    "title": "裝置連接",
+    "status": "狀態",
+    "not_connected": "未連接",
+    "connect_device": "連接裝置",
+    "disconnect_device": "中斷連接",
+    "device_info": "裝置資訊",
+    "model": "型號",
+    "manufacturer": "製造商",
+    "serial": "序號",
+    "android_version": "Android 版本",
+    "build_id": "Build ID",
+    "sdk_version": "SDK 版本",
+    "mode_adb": "ADB 模式",
+    "mode_fastboot": "Fastboot 模式",
+    "tips": {
+      "title": "💡 提示",
+      "fastboot": "為獲得最佳效果，請在 Fastboot 模式下連接裝置",
+      "fastboot_howto": "進入 Fastboot：關機後同時按住電源鍵和音量減鍵"
+    }
+  },
+  "tabs": {
+    "fastboot": "Fastboot",
+    "adb": "ADB 命令",
+    "files": "檔案管理",
+    "apps": "應用程式管理",
+    "tools": "工具",
+    "batch": "批次處理操作",
+    "presets": "裝置預設"
+  },
+  "fastboot": {
+    "title": "Fastboot 操作",
+    "flash": {
+      "title": "刷寫映像",
+      "choose_file": "選擇映像檔案",
+      "partition": "分割區",
+      "partition_placeholder": "選擇或輸入分割區名稱",
+      "flash_button": "刷寫映像",
+      "success": "映像刷寫成功",
+      "error": "刷寫失敗：{error}"
+    },
+    "bootloader": {
+      "unlock": "解鎖 Bootloader",
+      "lock": "鎖定 Bootloader",
+      "unlock_warning": "⚠️ 警告：解鎖 Bootloader 將會清空所有資料！",
+      "lock_warning": "⚠️ 警告：鎖定 Bootloader 將會清空所有資料！"
+    },
+    "reboot": {
+      "title": "重新啟動選項",
+      "system": "重新啟動到系統",
+      "bootloader": "重新啟動到 Bootloader",
+      "recovery": "重新啟動到 Recovery"
+    },
+    "erase": {
+      "title": "清除分割區",
+      "button": "清除分割區",
+      "warning": "⚠️ 警告：這將永久刪除分割區資料！"
+    }
+  },
+  "adb": {
+    "title": "ADB 命令",
+    "command_input": "輸入 ADB 命令",
+    "execute": "執行",
+    "quick_commands": "快捷命令",
+    "shell_prefix": "shell:"
+  },
+  "files": {
+    "title": "檔案管理器",
+    "current_path": "目前路徑",
+    "navigate_up": "⬆️ 上層目錄",
+    "create_folder": "建立資料夾",
+    "upload_file": "上傳檔案",
+    "refresh": "重新整理",
+    "name": "名稱",
+    "size": "大小",
+    "permissions": "權限",
+    "modified": "修改時間",
+    "actions": "操作",
+    "rename": "重新命名",
+    "delete": "刪除",
+    "download": "下載",
+    "delete_confirm": "確定要刪除 {name} 嗎？",
+    "rename_prompt": "為 {name} 輸入新名稱：",
+    "create_folder_prompt": "輸入資料夾名稱：",
+    "upload_success": "檔案上傳成功",
+    "upload_error": "上傳失敗：{error}"
+  },
+  "apps": {
+    "title": "應用程式管理器",
+    "refresh": "重新整理應用程式清單",
+    "filter": {
+      "all": "所有應用程式",
+      "user": "使用者應用程式",
+      "system": "系統應用程式",
+      "enabled": "已啟用",
+      "disabled": "已停用"
+    },
+    "search": "搜尋應用程式...",
+    "package_name": "套件名稱",
+    "version": "版本",
+    "actions": {
+      "uninstall": "解除安裝",
+      "disable": "停用",
+      "enable": "啟用",
+      "clear_data": "清除資料",
+      "force_stop": "強制停止",
+      "launch": "啟動"
+    },
+    "batch": {
+      "uninstall": "批次解除安裝",
+      "select": "選擇應用程式"
+    },
+    "install": {
+      "title": "安裝 APK",
+      "button": "安裝 APK",
+      "success": "APK 安裝成功",
+      "error": "安裝失敗：{error}"
+    }
+  },
+  "tools": {
+    "title": "工具",
+    "system_info": {
+      "title": "系統資訊",
+      "battery": "電池資訊",
+      "memory": "記憶體資訊",
+      "cpu": "CPU 資訊"
+    },
+    "media": {
+      "title": "媒體擷取",
+      "screenshot": "螢幕截圖",
+      "record_start": "開始錄影",
+      "record_stop": "停止錄影"
+    },
+    "file_ops": {
+      "title": "檔案操作",
+      "push": "推送檔案"
+    }
+  },
+  "batch": {
+    "title": "批次處理操作",
+    "new_script": "建立新腳本",
+    "load_template": "載入範本",
+    "save_script": "儲存腳本",
+    "execute": "執行腳本",
+    "script_name": "腳本名稱",
+    "script_desc": "描述",
+    "steps": "步驟",
+    "add_step": {
+      "flash": "新增刷寫步驟",
+      "adb": "新增 ADB 步驟",
+      "reboot": "新增重新啟動步驟",
+      "delay": "新增延遲步驟"
+    },
+    "templates": {
+      "flash_rom": "刷寫完整 ROM",
+      "debloat": "精簡系統",
+      "optimize": "效能最佳化",
+      "backup": "備份工作流程"
+    }
+  },
+  "presets": {
+    "title": "裝置預設",
+    "load": "載入預設",
+    "create": "建立自訂預設",
+    "devices": {
+      "pixel": "Google Pixel",
+      "samsung": "三星 Galaxy",
+      "xiaomi": "小米",
+      "oneplus": "一加",
+      "motorola": "摩托羅拉",
+      "generic": "通用裝置"
+    }
+  },
+  "console": {
+    "title": "主控台",
+    "clear": "清空主控台",
+    "download": "下載日誌",
+    "initialized": "AndroidPlus 已初始化",
+    "click_connect": "點擊「連接裝置」開始使用"
+  },
+  "messages": {
+    "device_selected": "裝置已選擇：{name}",
+    "device_opened": "裝置開啟成功",
+    "device_mode": "偵測到裝置模式：{mode}",
+    "interface_claimed": "已宣告介面 {num}",
+    "endpoints_found": "已找到端點 - 輸入：{in}，輸出：{out}",
+    "webadb_init": "正在初始化 WebADB 驗證...",
+    "webadb_success": "✅ WebADB 驗證成功！",
+    "webadb_available": "完整的 ADB 功能現已可用",
+    "webadb_failed": "WebADB 初始化失敗：{error}",
+    "webadb_fallback": "回退到基礎 ADB 模式...",
+    "webadb_not_loaded": "⚠️ WebADB 函式庫未載入",
+    "webadb_install_npm": "執行：npm install && npm run dev 以獲得完整 ADB 支援",
+    "adb_basic_mode": "ADB 協定已初始化（基礎模式）",
+    "adb_limited": "⚠️ 注意：基礎 ADB 模式功能有限",
+    "adb_use_webadb": "檔案操作和 shell 命令需要使用完整 WebADB",
+    "fastboot_init": "Fastboot 協定已初始化",
+    "retrieving_info": "正在取得裝置資訊...",
+    "info_retrieved": "裝置資訊取得成功",
+    "auth_required": "需要驗證。執行：npm install && npm run dev",
+    "command_sent": "命令已傳送...",
+    "command_success": "✅ 命令執行成功",
+    "disconnected": "已從裝置中斷連接"
+  },
+  "errors": {
+    "connection_failed": "連接錯誤：{error}",
+    "device_required": "裝置必須處於 {mode} 模式",
+    "command_failed": "命令失敗：{error}",
+    "file_required": "請選擇檔案",
+    "partition_required": "請選擇分割區",
+    "operation_cancelled": "操作已被使用者取消",
+    "webadb_required": "此操作需要 WebADB 函式庫"
+  },
+  "warnings": {
+    "data_loss": "⚠️ 警告：此操作將清空所有資料！",
+    "warranty_void": "⚠️ 警告：此操作可能會使保固失效！",
+    "brick_risk": "⚠️ 警告：錯誤操作可能導致裝置變磚！",
+    "backup_first": "請在繼續之前備份您的資料"
+  },
+  "footer": {
+    "warning": "⚠️ 警告：刷機可能會使裝置保固失效，操作不當可能導致裝置變磚。務必先備份資料。",
+    "credits": "AndroidPlus - 通用安卓 Web 刷機工具 |"
+  },
+  "language": {
+    "select": "語言",
+    "current": "目前語言"
+  }
+}

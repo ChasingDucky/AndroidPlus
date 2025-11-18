@@ -207,7 +207,7 @@
     "clear": "清空控制台",
     "download": "下载日志",
     "initialized": "AndroidPlus 已初始化",
-    "click_connect": "点击"连接设备"开始使用"
+    "click_connect": "点击「连接设备」开始使用"
   },
   "messages": {
     "device_selected": "设备已选择：{name}",
